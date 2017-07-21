@@ -1,0 +1,100 @@
+@import url(http://fonts.googleapis.com/css?family=Lato:300,400,700);
+
+
+html, body {
+background-color:transparent;
+padding:0px;
+border:0px;
+margin:0px;
+overflow: hidden;
+font-family: Lato;
+font-weight: 300;
+}
+
+#logo {
+  width:400px;
+  height:200px;
+  /*background-color: blue;*/
+  margin: 0 auto 0px auto;
+  background-image:url('logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  /*-webkit-filter: drop-shadow(0px 6px 0px #237DAD);*/
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color:rgba(0,0,0,.5);
+}
+
+#name {
+  width:600px;
+  height:50px;
+  background-color: rgba(255,255,255,1);
+  border: 0px;
+  font-style: none;
+  font-size: 20px;
+  color:rgba(0,0,0,.5);
+  font-weight: 300;
+  box-sizing: border-box;
+  padding-left:20px;
+  margin-bottom:20px;
+  border-radius: 2px;
+  box-shadow: 0 0 100px rgba(0,0,0,.1);
+  outline: none;
+}
+
+#join {
+  width:600px;
+  height:50px;
+  background-color: #2198d6;
+  text-align: center;
+  font-size: 16px;
+  line-height: 50px;
+  color:#fff;
+  font-weight: 700;
+  letter-spacing: 2px;
+  border-radius: 2px;
+  border:0px;
+  box-shadow: 0 0 100px rgba(0,0,0,.1);
+  outline: none;
+  text-shadow: 0 2px 0 rgba(0,0,0,.3);
+}
+
+.loginHolder {
+  opacity: 0;
+}
+
+#loginHolder {
+  background-color: transparent;
+  position: absolute;
+  left:50%;
+  top:50%;
+  width:600px;
+  height:400px;
+  margin-left:-300px;
+  margin-top:-250px;
+  transition: .5s;
+  /*transform: scale(0.5);*/
+}
+
+#room {
+  margin-top:30px;
+  text-align: center;
+  font-size: 16px;
+  color:rgba(0,0,0,.5);
+  background-color: transparent;
+}
+
+#roomName {
+  color:#2198d6;
+  border:0px;
+  margin:0px;
+  padding:0px;
+  width: 40px;
+  background-color: transparent;
+  font-size: 16px;
+  font-weight: 400;
+  outline: none;
+}
