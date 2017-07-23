@@ -1,5 +1,6 @@
-function setup() {
+var ballTrail = [];
 
+function setup() {
 
   frameRate(60);
   createCanvas(window.innerWidth, window.innerHeight);
@@ -13,7 +14,7 @@ function draw() {
 
   c5 = color('#DB5149');
   noStroke();
-  fill(255,255,255,100);
+  fill(0,0,0,10);
   var offset = window.innerWidth*0.15;
   ellipse(-offset, window.innerHeight/2, window.innerHeight*0.8, window.innerHeight*0.8);
   ellipse(window.innerWidth+offset, window.innerHeight/2, window.innerHeight*0.8, window.innerHeight*0.8);
@@ -93,6 +94,8 @@ function updateBall() {
   unMappedBallX = map(ballPosition.x, 0, 1, 0, window.innerWidth);
   unMappedBallY = map(ballPosition.y, 0, 1, 0, window.innerHeight);
 
+  trail(unMappedBallX, unMappedBallY);
+
   ballRadius = window.innerWidth*0.03;
 
   c3 = color('#278BC1');
@@ -106,6 +109,23 @@ function updateBall() {
 
   fill(c);
   ellipse(unMappedBallX, unMappedBallY, ballRadius, ballRadius);
+
+}
+
+function trail(x, y) {
+  if(ballTrail.length>20) {
+    ballTrail.shift();
+  }
+
+  ballTrail.push([x,y]);
+
+  for(var i=0;i<ballTrail.length;i++) {
+    fill(33,152,214,i);
+    // fill(255,255,255,i*10);
+    noStroke();
+    ellipse(ballTrail[i][0], ballTrail[i][1], i*2, i*2);
+  }
+
 
 }
 

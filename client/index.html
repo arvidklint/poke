@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
   <head>
+
+    <title>poke</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.dom.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.sound.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="ionicons/css/ionicons.css">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 
   <script>
-    var socket = io.connect('http://10.0.1.4:3000');
+    var socket = io.connect('http://192.168.1.185:3000');
     socket.on('news', function (data) {
       console.log(data);
       socket.emit('my other event', { my: 'banan' });
@@ -29,7 +32,9 @@
         document.getElementById('loginHolder').className += "loginHolder";
         document.getElementById('scoreHolder').className += "scoreHolder";
 
-        document.getElementById('scoreTimeLeft').className += "scoreTimeLeftMockup";
+        document.getElementById('scoreTimeLeft').className = "scoreTimeLeftMockup";
+
+        document.getElementById('logout').className = "button";
 
         var name = document.getElementById('name').blur();
         joined.play();
@@ -41,6 +46,8 @@
     var ballPosition = {};
     var cp = {};
     var cpAnimation = false;
+    var leftGoals = 0;
+    var rightGoals = 0;
 
     socket.on('movePlayer', function(data) {
       for(var player of playerList) {
@@ -75,40 +82,81 @@
       ballPosition = data;
     });
 
+    var goal = new Audio();
+    goal.src = 'goal.wav';
+    goal.volume = 1;
+
     socket.on('goal', function(data) {
+      if(data==='left') {
+        rightGoals++;
+        document.getElementById('scoreRight').innerHTML = rightGoals;
+      } else if(data==='right') {
+        leftGoals++;
+        document.getElementById('scoreLeft').innerHTML = leftGoals;
+      }
+
+      goal.load();
+      goal.play();
+
+      socket.emit('scores', { left: leftGoals, right: rightGoals });
+
       console.log(data);
     });
 
     var joined = new Audio();
-    joined.src = 'joined.wav';
-    joined.volume = 0.02;
+    joined.src = 'joined2.wav';
+    joined.volume = 0.3;
 
     var ball = new Audio();
     ball.src = 'ball2.wav';
     ball.volume = 0.2;
 
     var wall = new Audio();
-    wall.src = 'ball.wav';
+    wall.src = 'wall2.wav';
     wall.volume = 0.2;
 
     var goal = new Audio();
-    goal.src = 'goal.wav';
+    goal.src = 'goal3.wav';
     goal.volume = 0.2;
 
     socket.on('collision', function(data) {
       if(data.type === "ball") {
         ball.playbackRate = random(0.1,5);
+        ball.load();
         ball.play();
 
         cp = data.cp;
         cpAnimation = true;
 
       } else if(data.type === "wall") {
-        wall.playbackRate = random(0.1,5);
+        wall.playbackRate = random(10);
+        wall.load();
         wall.play();
 
       }
     });
+
+    function logout() {
+      document.getElementById('loginHolder').className = "";
+      document.getElementById('scoreHolder').className = "";
+      document.getElementById('logout').className = "button buttonHide";
+
+
+      // Add user disconnect to server
+    }
+
+    var mute = false;
+    function volume() {
+      if(mute) {
+        document.getElementById('volume').className = "button ion-ios-volume-high";
+      } else {
+        document.getElementById('volume').className = "button ion-ios-volume-low";
+      }
+      mute = !mute;
+
+    }
+
+
 
     function runScript(e) {
       if (e.keyCode == 13) {
@@ -122,6 +170,13 @@
   </head>
 
   <body>
+    <div id="settings">
+      <div id="volume" class="button ion-ios-volume-high" onClick="volume();"></div>
+      <div id="logout" class="button buttonHide" onClick="logout();">
+        <div class="exitOn ion-ios-close-outline"></div>
+        <div class="exitOff ion-ios-close"></div>
+      </div>
+    </div>
     <div id="scoreHolder">
       <div id="scoreTimeLeft"></div>
       <div id="scoreLeft">0</div>
