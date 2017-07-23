@@ -54,19 +54,19 @@ function draw() {
     ver: 0
   };
 
-  if(keyIsDown(LEFT_ARROW)) {
+  if(keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
     move.hor = -1;
   }
 
-  if(keyIsDown(RIGHT_ARROW)) {
+  if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
     move.hor = 1;
   }
 
-  if(keyIsDown(UP_ARROW)) {
+  if(keyIsDown(UP_ARROW) || keyIsDown(87)) {
     move.ver = -1;
   }
 
-  if(keyIsDown(DOWN_ARROW)) {
+  if(keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
     move.ver = 1;
   }
 
@@ -85,6 +85,10 @@ function draw() {
     updateCollisionAnimation();
   }
 
+  if(goalAnimation) {
+    updateGoalAnimation();
+  }
+
 }
 
   var ani = 0;
@@ -98,14 +102,14 @@ function updateBall() {
 
   ballRadius = window.innerWidth*0.03;
 
-  c3 = color('#278BC1');
-  noStroke();
-
-  ballBackX = map(ballPosition.x, 0, 1, window.innerWidth*0.0025, -window.innerWidth*0.0025);
-  ballBackY = map(ballPosition.y, 0, 1, window.innerWidth*0.0025, -window.innerWidth*0.0025);
-
-  fill(c3);
-  ellipse(unMappedBallX+ballBackX, unMappedBallY+ballBackY, ballRadius, ballRadius);
+  // c3 = color('#278BC1');
+  // noStroke();
+  //
+  // ballBackX = map(ballPosition.x, 0, 1, window.innerWidth*0.0025, -window.innerWidth*0.0025);
+  // ballBackY = map(ballPosition.y, 0, 1, window.innerWidth*0.0025, -window.innerWidth*0.0025);
+  //
+  // fill(c3);
+  // ellipse(unMappedBallX+ballBackX, unMappedBallY+ballBackY, ballRadius, ballRadius);
 
   fill(c);
   ellipse(unMappedBallX, unMappedBallY, ballRadius, ballRadius);
@@ -120,10 +124,13 @@ function trail(x, y) {
   ballTrail.push([x,y]);
 
   for(var i=0;i<ballTrail.length;i++) {
-    fill(33,152,214,i);
+    fill(33,152,214,250);
     // fill(255,255,255,i*10);
     noStroke();
-    ellipse(ballTrail[i][0], ballTrail[i][1], i*2, i*2);
+    var offsetTrailX = random(-5,5);
+    var offsetTrailY = random(-5,5);
+
+    ellipse(ballTrail[i][0]+offsetTrailX, ballTrail[i][1]+offsetTrailY, i*window.innerWidth*0.0013, i*window.innerWidth*0.0013);
   }
 
 
@@ -147,6 +154,34 @@ function updateCollisionAnimation() {
   } else {
     cpAnimation = false;
     ani = 0;
+  }
+
+}
+
+var goalAni = 0;
+
+function updateGoalAnimation() {
+  if(goalAni < 50) {
+    goalAni += 5;
+
+    unMappedGoalX = map(goalPos.x, 0, 1, 0, window.innerWidth);
+    unMappedGoalY = map(goalPos.y, 0, 1, 0, window.innerHeight);
+
+    opacity = map(goalAni, 0, 50, 1, 0);
+
+    c4 = color('#ffffff');
+    stroke(c4, opacity);
+    strokeWeight(50-goalAni);
+    noFill();
+    ellipse(unMappedGoalX, unMappedGoalY, goalAni*window.innerWidth*0.003, goalAni*window.innerWidth*0.003);
+
+    ellipse(unMappedGoalX, unMappedGoalY+20, goalAni*window.innerWidth*0.002, goalAni*window.innerWidth*0.002);
+
+    ellipse(unMappedGoalX, unMappedGoalY-20, goalAni*window.innerWidth*0.001, goalAni*window.innerWidth*0.001);
+
+  } else {
+    goalAnimation = false;
+    goalAni = 0;
   }
 
 }

@@ -102,7 +102,7 @@ function bounceBorders(data) {
   if(data.position.x < 0) {
     data.position.x = 0;
     if(data.position.y > 0.2 && data.position.y < 0.8 && data.id === 'ball') {
-      goal('left');
+      goal('left', data.position); // LADE TILL XY-VÄRDET
     } else {
       data.velocity.x *= -1;
       io.emit('collision', {
@@ -112,7 +112,7 @@ function bounceBorders(data) {
   } else if(data.position.x > 1) {
     data.position.x = 1;
     if(data.position.y > 0.2 && data.position.y < 0.8 && data.id === 'ball') {
-      goal('right');
+      goal('right', data.position); // LADE TILL XY-VÄRDET
     } else {
       data.velocity.x *= -1;
       io.emit('collision', {
@@ -135,8 +135,8 @@ function bounceBorders(data) {
   }
 }
 
-function goal(side) {
-  io.emit('goal', side);
+function goal(side, goalPos) {
+  io.emit('goal', [side,goalPos]); // LADE TILL XY-VÄRDET
   ball.position = {
     x: 0.5,
     y: 0.5

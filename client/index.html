@@ -46,6 +46,8 @@
     var ballPosition = {};
     var cp = {};
     var cpAnimation = false;
+    var goalAnimation = false;
+    var goalPos;
     var leftGoals = 0;
     var rightGoals = 0;
 
@@ -86,21 +88,30 @@
     goal.src = 'goal.wav';
     goal.volume = 1;
 
+    var goalCrash = new Audio();
+    goalCrash.src = 'goalCrash.wav';
+    goalCrash.volume = 0;
+
     socket.on('goal', function(data) {
-      if(data==='left') {
+      if(data[0]==='left') {
         rightGoals++;
         document.getElementById('scoreRight').innerHTML = rightGoals;
-      } else if(data==='right') {
+      } else if(data[0]==='right') {
         leftGoals++;
         document.getElementById('scoreLeft').innerHTML = leftGoals;
       }
 
+      goalAnimation = true;
+      goalPos = data[1];
+
       goal.load();
       goal.play();
 
+      goalCrash.load();
+      goalCrash.play();
+
       socket.emit('scores', { left: leftGoals, right: rightGoals });
 
-      console.log(data);
     });
 
     var joined = new Audio();
