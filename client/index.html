@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.sound.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+
+  <script>
+    var socket = io.connect('http://10.0.1.4:3000');
+    socket.on('news', function (data) {
+      console.log(data);
+      socket.emit('my other event', { my: 'banan' });
+    });
+  </script>
+
+  <script src="sketch.js"></script>
+
+  <script>
+    function newPlayer() {
+      var name = document.getElementById('name').value;
+      var roomName = document.getElementById('roomName').value;
+      if(name!="" && roomName!="") {
+        // console.log("tried to join");
+        socket.emit('join', { name: name, room:roomName});
+        document.getElementById('loginHolder').className += "loginHolder";
+        document.getElementById('scoreHolder').className += "scoreHolder";
+
+        document.getElementById('scoreTimeLeft').className += "scoreTimeLeftMockup";
+
+        var name = document.getElementById('name').blur();
+        joined.play();
+      }
+    }
+
+    var playerList = [];
+    var thisPlayer = {};
+    var ballPosition = {};
+    var cp = {};
+    var cpAnimation = false;
+
+    socket.on('movePlayer', function(data) {
+      for(var player of playerList) {
+        if(player.id === data.id) {
+          player.x = data.position.x;
+          player.y = data.position.y;
+        }
+      }
+    });
+
+    socket.on('allPlayers', function(data) {
+      // console.log(data);
+      playerList = data;
+
+    });
+
+    socket.on('newPlayer', function(data) {
+      // console.log(data);
+      playerList.push(data);
+    });
+
+    socket.on('remove', function(id) {
+      // console.log(id);
+      for(var i=0; i<playerList.length;i++) {
+        if(playerList[i].id === id) {
+          playerList.splice(i, 1);
+        }
+      }
+    });
+
+    socket.on('moveBall', function(data) {
+      ballPosition = data;
+    });
+
+    socket.on('goal', function(data) {
+      console.log(data);
+    });
+
+    var joined = new Audio();
+    joined.src = 'joined.wav';
+    joined.volume = 0.02;
+
+    var ball = new Audio();
+    ball.src = 'ball2.wav';
+    ball.volume = 0.2;
+
+    var wall = new Audio();
+    wall.src = 'ball.wav';
+    wall.volume = 0.2;
+
+    var goal = new Audio();
+    goal.src = 'goal.wav';
+    goal.volume = 0.2;
+
+    socket.on('collision', function(data) {
+      if(data.type === "ball") {
+        ball.playbackRate = random(0.1,5);
+        ball.play();
+
+        cp = data.cp;
+        cpAnimation = true;
+
+      } else if(data.type === "wall") {
+        wall.playbackRate = random(0.1,5);
+        wall.play();
+
+      }
+    });
+
+    function runScript(e) {
+      if (e.keyCode == 13) {
+        newPlayer();
+        return false;
+      }
+    }
+
+  </script>
+
+  </head>
+
+  <body>
+    <div id="scoreHolder">
+      <div id="scoreTimeLeft"></div>
+      <div id="scoreLeft">0</div>
+      <div id="scoreRight">0</div>
+    </div>
+    <div id="loginHolder">
+      <div id="logo"></div>
+      <input type="text" id="name" value="" placeholder="nickname" onkeypress="return runScript(event)" autocomplete="off" autofocus></input>
+      <input type="submit" id="join" value="JOIN GAME" onClick="newPlayer()"/>
+      <div id="room">the roomname is <input type="text" id="roomName" value="#abc"/></div>
+    </div>
+  </body>
+
+</html>
