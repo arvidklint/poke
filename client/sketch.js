@@ -13,7 +13,7 @@ function draw() {
 
   c5 = color('#DB5149');
   noStroke();
-  fill(255,255,255,150);
+  fill(255,255,255,100);
   var offset = window.innerWidth*0.15;
   ellipse(-offset, window.innerHeight/2, window.innerHeight*0.8, window.innerHeight*0.8);
   ellipse(window.innerWidth+offset, window.innerHeight/2, window.innerHeight*0.8, window.innerHeight*0.8);

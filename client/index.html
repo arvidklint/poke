@@ -27,6 +27,10 @@
         // console.log("tried to join");
         socket.emit('join', { name: name, room:roomName});
         document.getElementById('loginHolder').className += "loginHolder";
+        document.getElementById('scoreHolder').className += "scoreHolder";
+
+        document.getElementById('scoreTimeLeft').className += "scoreTimeLeftMockup";
+
         var name = document.getElementById('name').blur();
         joined.play();
       }
@@ -87,6 +91,10 @@
     wall.src = 'ball.wav';
     wall.volume = 0.2;
 
+    var goal = new Audio();
+    goal.src = 'goal.wav';
+    goal.volume = 0.2;
+
     socket.on('collision', function(data) {
       if(data.type === "ball") {
         ball.playbackRate = random(0.1,5);
@@ -114,6 +122,11 @@
   </head>
 
   <body>
+    <div id="scoreHolder">
+      <div id="scoreTimeLeft"></div>
+      <div id="scoreLeft">0</div>
+      <div id="scoreRight">0</div>
+    </div>
     <div id="loginHolder">
       <div id="logo"></div>
       <input type="text" id="name" value="" placeholder="nickname" onkeypress="return runScript(event)" autocomplete="off" autofocus></input>
